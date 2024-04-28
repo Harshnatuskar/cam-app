@@ -10,4 +10,5 @@ interface CameraRepository {
     suspend fun takeVideo (
         controller: LifecycleCameraController
     )
+
 }
