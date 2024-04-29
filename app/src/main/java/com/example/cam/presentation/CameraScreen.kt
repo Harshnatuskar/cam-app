@@ -9,6 +9,7 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
@@ -34,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -74,10 +77,21 @@ fun CameraScreen(
                 }
             }
         )
+
+        if (isRecording) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp)
+            ) {
+                RedFlickeringDot(modifier = Modifier.size(24.dp))
+            }
+        }
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 60.dp)
+                .padding(bottom = 40.dp)
                 .align(Alignment.BottomCenter),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
@@ -92,7 +106,7 @@ fun CameraScreen(
                 modifier = Modifier
                     .clip(RoundedCornerShape(14.dp))
                     .size(45.dp)
-                    .background(MaterialTheme.colorScheme.primary)
+                    .background(Color.Transparent)
                     .clickable {
                         val directoryUri = Uri.parse("content://media/internal/images/media")
                         val intent = Intent(Intent.ACTION_VIEW, directoryUri)
@@ -104,7 +118,7 @@ fun CameraScreen(
                 Icon(
                     painter = painterResource(id = R.drawable.folder),
                     contentDescription = "Folder",
-                    tint = MaterialTheme.colorScheme.onPrimary,
+                    tint = Color.White,
                     modifier = Modifier.size(26.dp)
                 )
             }
@@ -114,7 +128,8 @@ fun CameraScreen(
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
-                    .size(50.dp)
+                    .size(68.dp)
+                    .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.primary)
                     .clickable {
                         if ((activity as MainActivity).arePermissionsGranted()) {
@@ -125,17 +140,19 @@ fun CameraScreen(
             ){
                 Icon(
                     painter =
-                    if(isRecording) painterResource(id = R.drawable.stop)
+                    if (isRecording) painterResource(id = R.drawable.stop)
                     else painterResource(id = R.drawable.record),
                     contentDescription = "Take video",
                     tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.size(26.dp))
+                    modifier = Modifier.size(28.dp)
+                )
             }
             Spacer(modifier = Modifier.width(1.dp))
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
-                    .size(50.dp)
+                    .size(68.dp)
+                    .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.primary)
                     .clickable {
                         if ((activity as MainActivity).arePermissionsGranted()) {
@@ -148,14 +165,15 @@ fun CameraScreen(
                     painter = painterResource(id = R.drawable.frame),
                     contentDescription = "Take photo",
                     tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.size(26.dp))
+                    modifier = Modifier.size(28.dp)
+                )
             }
             Spacer(modifier = Modifier.width(1.dp))
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
-                    .size(50.dp)
-                    .background(MaterialTheme.colorScheme.primary)
+                    .size(45.dp)
+                    .background(Color.Transparent)
                     .clickable {
                         controller.cameraSelector =
                             if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
@@ -169,9 +187,31 @@ fun CameraScreen(
                 Icon(
                     painter = painterResource(id = R.drawable.resource_switch),
                     contentDescription = "Switch Camera",
-                    tint = MaterialTheme.colorScheme.onPrimary,
+                    tint = Color.White,
                     modifier = Modifier.size(26.dp))
             }
+        }
+    }
+}
+
+@Composable
+fun RedFlickeringDot(
+    modifier: Modifier
+) {
+    Box(
+        modifier = modifier
+            .size(24.dp)
+            .clip(CircleShape)
+            .background(Color.Transparent)
+    ) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val dotColor = Color.Red
+            val dotRadius = 12f
+
+            drawCircle(
+                color = dotColor,
+                radius = dotRadius
+            )
         }
     }
 }
