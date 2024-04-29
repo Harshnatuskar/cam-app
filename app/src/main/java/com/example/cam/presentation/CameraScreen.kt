@@ -3,6 +3,8 @@ package com.example.cam.presentation
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Environment
+import android.provider.MediaStore
 import androidx.camera.core.CameraSelector
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
@@ -80,29 +82,33 @@ fun CameraScreen(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ){
+            val imagesIntent = Intent(Intent.ACTION_VIEW)
+            imagesIntent.type = "image/*"
+            imagesIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
+            val photosAndVideosDirectory = "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/cam/"
+
             Box(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(12.dp))
-                    .size(50.dp)
+                    .clip(RoundedCornerShape(14.dp))
+                    .size(45.dp)
                     .background(MaterialTheme.colorScheme.primary)
                     .clickable {
-                        Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse(
-                                "content://media/internal/images/media"
-                            )
-                        ).also {
-                            activity.startActivity(it)
-                        }
+                        val directoryUri = Uri.parse("content://media/internal/images/media")
+                        val intent = Intent(Intent.ACTION_VIEW, directoryUri)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        activity.startActivity(intent)
                     },
                 contentAlignment = Alignment.Center
-            ){
+            ) {
                 Icon(
                     painter = painterResource(id = R.drawable.folder),
                     contentDescription = "Folder",
                     tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.size(26.dp))
+                    modifier = Modifier.size(26.dp)
+                )
             }
+
             Spacer(modifier = Modifier.width(1.dp))
 
             Box(
