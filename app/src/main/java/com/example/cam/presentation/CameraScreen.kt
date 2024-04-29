@@ -88,7 +88,9 @@ fun CameraScreen(
                     .clickable {
                         Intent(
                             Intent.ACTION_VIEW,
-                            Uri.parse("content:://media/internal/images/media")
+                            Uri.parse(
+                                "content://media/internal/images/media"
+                            )
                         ).also {
                             activity.startActivity(it)
                         }
@@ -149,11 +151,12 @@ fun CameraScreen(
                     .size(50.dp)
                     .background(MaterialTheme.colorScheme.primary)
                     .clickable {
-                        if(controller.cameraSelector== CameraSelector.DEFAULT_BACK_CAMERA){
-                            CameraSelector.DEFAULT_FRONT_CAMERA
-                        }else{
-                            CameraSelector.DEFAULT_BACK_CAMERA
-                        }
+                        controller.cameraSelector =
+                            if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+                                CameraSelector.DEFAULT_FRONT_CAMERA
+                            } else {
+                                CameraSelector.DEFAULT_BACK_CAMERA
+                            }
                     },
                 contentAlignment = Alignment.Center
             ){
